@@ -1,116 +1,407 @@
-# Ward AI - AI-Powered Token Security Platform
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black" alt="Next.js 16"/>
+  <img src="https://img.shields.io/badge/React-19.2-blue" alt="React 19.2"/>
+  <img src="https://img.shields.io/badge/TypeScript-5-blue" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Tailwind-v4-38bdf8" alt="Tailwind CSS v4"/>
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License"/>
+</p>
 
-Ward AI is a real-time security platform that protects token launches from market manipulation, insider threats, and predatory trading practices on DEX platforms.
+<h1 align="center">🛡️ WARD AI - AI-Powered Token Security</h1>
+
+<p align="center">
+  Real-time AI-powered security platform protecting crypto traders from market manipulation, rug pulls, and predatory trading on Solana DEX platforms.
+</p>
+
+---
+  
+## Tech Stack
+
+### Core Framework
+- **[Next.js 16](https://nextjs.org)** - React framework with App Router and Server Components
+- **[React 19.2](https://react.dev)** - Latest React with Canary features (useEffectEvent, Activity)
+- **[TypeScript 5](https://typescriptlang.org)** - Type-safe development
+- AI-powered analysis with **GPT-4** and [Anthropic Claude](https://www.anthropic.com/)
+
+### Blockchain & Data
+- **[@solana/web3.js](https://solana.com)** - Solana blockchain RPC client
+- **[DexScreener API](https://dexscreener.com)** - Real-time DEX trading data aggregation
+- **[Bitquery API](https://bitquery.io)** - On-chain data analytics (optional)
+
+### UI & Styling
+- **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first CSS with design tokens
+- **[shadcn/ui](https://ui.shadcn.com)** - High-quality React components (Radix UI primitives)
+- **[Recharts](https://recharts.org)** - Composable charting library for data visualization
+- **[Lucide Icons](https://lucide.dev)** - Beautiful, consistent icon set
+
+### State & Data Fetching
+- **[SWR](https://swr.vercel.app)** - React Hooks for data fetching with caching and revalidation
+- **React Server Components** - Zero-JS server-rendered components
+
+## Getting Started
+
+### Installation
+
+```bash```
+
+# Clone the repository
+```git clone https://github.com/Ward-AI-Organization/ward-ai-foundation.git```
+
+```cd ward-ai-foundation```
+
+### Environment Variables
+
+Create environment variables in your local or cloud server:
+
+```
+# Optional: Bitquery API for enhanced analytics
+BITQUERY_API_KEY=your_bitquery_key
+
+# Optional: Apify or X API for social scraping 
+APIFY_API_TOKEN=your_apify_token
+```
+
+### Run Development Server
+
+```npm i```
+
+```npm run dev```
+# or
+
+```bun dev```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## Features
 
-### 🔍 Real-Time Token Analysis
-- Analyze any Solana token by contract address
-- AI-powered risk assessment using GPT-4
-- Detection of pump-and-dump schemes, rug pulls, and insider trading
-- Real-time data from DexScreener API
+### 🔍 Token Analysis & Risk Scoring
+- **AI-Powered Risk Assessment** - ML algorithms analyze 50+ on-chain metrics
+- **Real-Time Data Integration** - Live feeds from DexScreener, Solana RPCs, and DEX aggregators
+- **Multi-Factor Risk Scoring** - Combines liquidity, holder distribution, trading patterns, and volatility
+- **Contract Security Audit** - Automated smart contract vulnerability detection
 
-### 🚨 Live Alert System
-- AI-generated security alerts from trending tokens
-- Continuous monitoring of suspicious trading patterns
-- Real-time threat classification (critical, warning, info, success)
+### 📊 Portfolio Protection Monitor
+- **Multi-Wallet Tracking** - Monitor unlimited Solana wallets in real-time
+- **Live Holdings Dashboard** - Track token balances, values, and P&L
+- **Risk Aggregation** - Portfolio-wide risk scoring with weighted averages
+- **Auto-Refresh** - Continuous monitoring with 30-second update intervals
+- **Network Resilience** - Intelligent fallback with cached data during RPC outages
 
-### 📊 Market Intelligence
-- Trending tokens with live price data
-- 24h volume, price changes, and liquidity metrics
-- Direct links to analyze any token
-- Integration with DexScreener for accurate DEX data
+### 🚨 Live Trading Signals
+- **Real-Time Alerts** - Instant notifications for whale activity, volume spikes, and price movements
+- **Order Book Analysis** - Live buy/sell walls with depth visualization
+- **Pattern Recognition** - Detects pump schemes, panic selling, momentum shifts, and breakouts
+- **Alert Cooldowns** - Smart deduplication prevents alert spam (60s cooldowns)
+- **5-Second Refresh** - Sub-10-second latency for critical trading signals
 
-### 🛡️ Security Modules
-- **Insider Selling Detection** - Monitor wallet activity during launches
-- **Liquidity Drain Prevention** - Alert on suspicious liquidity movements
-- **Deployer LP Withdrawal Guard** - Protect against rug pulls
-- **Sniper Volume Detection** - Identify artificial volume cycling
+### 📈 ML Risk Analysis Dashboard
+- **Sentiment Tracking** - AI-generated social sentiment based on trading activity
+- **Risk Gauge Visualization** - Interactive risk meter with color-coded zones
+- **Holder Distribution** - Top holder concentration analysis with percentage breakdowns
+- **Liquidity Health** - Real-time liquidity pool monitoring and drain detection
+- **Historical Trends** - Risk score evolution and pattern detection
 
-## How It Works
+### 🎯 Smart Contract Audit Scanner
+- **Automated Security Checks** - Scans for honeypots, hidden mints, and ownership risks
+- **Liquidity Analysis** - Validates pool depth and lock status
+- **Trading Activity Review** - Flags suspicious buy/sell ratios and volume manipulation
+- **Volatility Assessment** - Identifies extreme price swings indicating manipulation
+- **Risk Classification** - Low/Medium/High risk levels with actionable insights
+- 
+## Usage
 
-### 1. Token Search & Analysis
-Enter any Solana token contract address in the search bar. Ward AI will:
+### 1. Analyze a Token
+
+Navigate to the **Analyze** page and enter any Solana token contract address:
+
+```
+Example: 7Y2TPeq3hqw21LRTCi4wBWoivDngCpNNJsN1hzhZpump
+```
+
+The system will:
 - Fetch real-time trading data from DexScreener
-- Analyze price volatility, volume, liquidity, and trading patterns
-- Use AI (GPT-4) to detect manipulation indicators
-- Generate a comprehensive risk score (0-100)
-- Provide specific threat details and recommendations
+- Analyze 50+ on-chain metrics (liquidity, volume, holder concentration)
+- Run ML risk scoring algorithms
+- Generate AI-powered threat analysis
+- Display comprehensive risk report with actionable insights
 
-### 2. AI-Powered Detection
-Ward AI uses the Vercel AI SDK with GPT-4 to analyze:
-- Unusual price movements and volatility patterns
-- Low liquidity relative to market cap (rug pull indicators)
-- Suspicious buy/sell ratios
-- Age-related risks for newly launched tokens
-- Holder concentration and insider activity
+### 2. Monitor Your Portfolio
 
-### 3. Real-Time Monitoring
-- Fetches trending tokens from DexScreener every 2 minutes
-- Generates AI security alerts every 30 seconds
-- Updates threat detection charts with live data
-- Continuous monitoring of active tokens
+Navigate to **Analytics** > **Portfolio Protection**:
 
-## Tech Stack
+1. Enter your Solana wallet address
+2. System fetches all SPL token holdings via Solana RPC
+3. Calculates real-time portfolio value with live pricing
+4. Aggregates risk scores across all holdings
+5. Auto-refreshes every 30 seconds
+6. Caches data to handle RPC rate limits gracefully
 
-- **Next.js 16** - React framework with App Router
-- **Vercel AI SDK v5** - AI-powered analysis (GPT-4, GPT-4o-mini)
-- **DexScreener API** - Real-time DEX trading data
-- **Tailwind CSS v4** - Styling with design tokens
-- **Recharts** - Data visualization
-- **shadcn/ui** - UI components
+### 3. Track Live Trading Signals
+
+Navigate to **Analytics** > **ML Risk Analysis**:
+
+- Live trading signals update every 5 seconds
+- Order book shows real-time buy/sell walls
+- Alerts appear for significant events:
+  - 🐋 Whale buys (large transactions)
+  - 🚨 Panic selling (rapid sell clusters)
+  - ⚡ Volume spikes (unusual activity)
+  - 🚀 Breakouts (price momentum)
+  - 💧 Liquidity changes (pool movements)
+
+### 4. Run Smart Contract Audits
+
+Navigate to **Analytics** > **Contract Scanner**:
+
+Enter a token address to scan for:
+- Honeypot detection (can you sell after buying?)
+- Hidden mint functions (unlimited supply risks)
+- Liquidity lock status (rug pull prevention)
+- Unusual trading patterns (wash trading, sniping)
+- Holder concentration (insider dump risks)
 
 ## API Routes
 
 ### `/api/analyze-token`
-Analyzes a token using AI and returns:
-- Risk score and level (low/medium/high/critical)
-- Detected threats with severity and confidence
-- Security metrics (insider activity, liquidity health, etc.)
-- Actionable recommendations
 
-### `/api/trending-tokens`
-Fetches trending tokens from DexScreener with:
-- Price, volume, and liquidity data
-- 24h price changes
-- Direct links to token pairs
+Performs comprehensive AI-powered token analysis.
+
+**Query Parameters:**
+- `address` (string) - Solana token contract address
+
+**Response:**
+```typescript
+{
+  riskScore: number;        // 0-100 (higher = more risky)
+  riskLevel: string;        // "low" | "medium" | "high" | "critical"
+  analysis: string;         // AI-generated detailed analysis
+  threats: Array<{
+    type: string;
+    severity: string;
+    confidence: number;
+    description: string;
+  }>;
+  metrics: {
+    liquidity: number;
+    volume24h: number;
+    priceChange24h: number;
+    holders: number;
+    age: number;
+  };
+}
+```
+
+### `/api/wallet-holdings`
+
+Fetches real-time portfolio holdings for a Solana wallet.
+
+**Query Parameters:**
+- `address` (string) - Solana wallet address
+
+**Response:**
+```typescript
+{
+  holdings: Array<{
+    mint: string;
+    symbol: string;
+    name: string;
+    balance: number;
+    decimals: number;
+    price: number;
+    value: number;
+    riskScore: number;
+  }>;
+  totalValue: number;
+  averageRisk: number;
+}
+```
+
+### `/api/ml-risk-analysis`
+
+Generates ML-based risk analysis with sentiment tracking.
+
+**Query Parameters:**
+- `address` (string) - Token contract address
+
+**Response:**
+```typescript
+{
+  overallRisk: number;
+  sentiment: {
+    score: number;
+    label: string;
+    posts: Array<{
+      platform: string;
+      author: string;
+      content: string;
+      sentiment: string;
+      timestamp: string;
+    }>;
+  };
+  holderDistribution: Array<{
+    address: string;
+    percentage: number;
+    balance: number;
+  }>;
+}
+```
+
+### `/api/contract-audit`
+
+Performs automated smart contract security audit.
+
+**Query Parameters:**
+- `address` (string) - Token contract address
+
+**Response:**
+```typescript
+{
+  overallRisk: number;
+  findings: Array<{
+    category: string;
+    severity: string;
+    title: string;
+    description: string;
+    recommendation: string;
+  }>;
+  metrics: {
+    liquidityScore: number;
+    tradingActivityScore: number;
+    volatilityScore: number;
+    honeypotRisk: boolean;
+  };
+}
+```
 
 ### `/api/live-alerts`
-Generates AI-powered security alerts from recent tokens:
-- Real-time threat classification
-- Specific security concerns
-- Token details and timestamps
 
-## Getting Started
+Streams real-time trading alerts for monitored tokens.
 
-1. **Search for a token**: Enter a Solana contract address in the search bar
-2. **View analysis**: Get instant AI-powered risk assessment
-3. **Monitor alerts**: Watch live security alerts for trending tokens
-4. **Explore trending**: Check trending tokens and analyze them
+**Query Parameters:**
+- `address` (string) - Token contract address
 
-## Environment Setup
+**Response:**
+\`\`\`typescript
+{
+  alerts: Array<{
+    id: string;
+    type: string;
+    severity: string;
+    message: string;
+    timestamp: string;
+    data: object;
+  }>;
+}
+```
 
-No API keys required! Ward AI uses the Vercel AI Gateway which provides:
-- OpenAI GPT-4 and GPT-4o-mini access
-- No rate limiting in development
-- Automatic model routing
+### `/api/social-sentiment`
 
-## Future Enhancements
+Analyzes social sentiment using on-chain trading patterns.
 
-- Multi-chain support (Ethereum, BSC, Base, etc.)
-- Historical analysis and pattern detection
-- Wallet tracking and watchlists
-- Telegram/Discord alert integrations
-- Custom alert rules and thresholds
-- Portfolio protection mode
+**Query Parameters:**
+- `address` (string) - Token contract address
 
-## Notes
+**Response:**
+\`\`\`typescript
+{
+  sentiment: {
+    score: number;          // -100 to +100
+    label: string;          // "Bullish" | "Neutral" | "Bearish"
+    confidence: number;
+  };
+  activity: Array<{
+    platform: string;
+    author: string;
+    content: string;
+    sentiment: string;
+    engagement: number;
+    timestamp: string;
+  }>;
+}
+```
 
-- Currently supports Solana tokens via DexScreener
-- AI analysis requires active trading pairs
-- Alert generation happens every 30 seconds
-- Trending tokens refresh every 2 minutes
+## Project Structure
+
+```
+ward-ai-foundation/
+├── app/
+│   ├── analytics/          # Portfolio protection, ML risk analysis
+│   ├── analyze/            # Token analysis interface
+│   ├── advanced-trading/   # Professional trading terminal
+│   ├── api/                # Backend API routes
+│   │   ├── analyze-token/
+│   │   ├── wallet-holdings/
+│   │   ├── ml-risk-analysis/
+│   │   ├── contract-audit/
+│   │   ├── live-alerts/
+│   │   └── social-sentiment/
+│   └── page.tsx            # Landing page
+├── components/
+│   ├── portfolio-monitor.tsx
+│   ├── ml-risk-scorer.tsx
+│   ├── contract-scanner.tsx
+│   ├── live-trading-chart.tsx
+│   ├── sentiment-tracker.tsx
+│   └── ui/                 # shadcn/ui components
+├── lib/
+│   └── utils.ts            # Utility functions
+└── public/                 # Static assets
+```
+
+## Key Features Explained
+
+### Real-Time Data Architecture
+
+WARD uses a multi-layered approach to ensure data accuracy and reliability:
+
+1. **Primary Source**: DexScreener API for DEX aggregated data
+2. **Blockchain Source**: Solana RPC for on-chain verification
+3. **Fallback Strategy**: Multiple RPC endpoints with automatic failover
+4. **Caching Layer**: Client-side caching prevents data loss during outages
+5. **Rate Limit Handling**: Intelligent backoff and retry mechanisms
+
+### AI-Powered Risk Scoring
+
+The ML risk analysis combines multiple factors:
+
+- **Liquidity Health** (25%): Pool depth, lock status, LP token distribution
+- **Trading Patterns** (20%): Buy/sell ratios, volume consistency, price stability
+- **Holder Distribution** (20%): Top holder concentration, whale activity
+- **Contract Security** (15%): Audit findings, ownership risks, mint functions
+- **Market Metrics** (10%): Market cap, age, exchange listings
+- **Volatility Analysis** (10%): Price swings, manipulation indicators
+
+### Network Resilience
+
+WARD handles Solana RPC failures gracefully:
+
+1. Tries multiple public RPC endpoints sequentially
+2. Implements connection timeouts (3-5 seconds)
+3. Caches successful responses for 30 seconds
+4. Shows stale data with warning during outages
+5. Auto-retries in background without user intervention
+
+## Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+- **X (Twitter)**: [@wardaicrypto](https://x.com/wardaicrypto)
+- **GitHub**: [ward-ai-foundation](https://github.com/Ward-AI-Organization/ward-ai-foundation)
+- **Website**: [ward-ai.com](https://www.ward-ai.com/)
 
 ---
 
-Built with ❤️ using v0 by Vercel
+<p align="center">
+  Built with ❤️ by the WARD team 
+</p>
