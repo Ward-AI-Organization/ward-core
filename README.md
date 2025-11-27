@@ -6,70 +6,21 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License"/>
 </p>
 
-<h1 align="center">🛡️ WARD AI - AI-Powered Token Security</h1>
+<h1 align="center">🛡️ WARD - AI Market Guard</h1>
 
 <p align="center">
   Real-time AI-powered security platform protecting crypto traders from market manipulation, rug pulls, and predatory trading on Solana DEX platforms.
 </p>
 
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#api-routes">API Routes</a>
+</p>
+
 ---
-  
-## Tech Stack
-
-### Core Framework
-- **[Next.js 16](https://nextjs.org)** - React framework with App Router and Server Components
-- **[React 19.2](https://react.dev)** - Latest React with Canary features (useEffectEvent, Activity)
-- **[TypeScript 5](https://typescriptlang.org)** - Type-safe development
-- AI-powered analysis with **GPT-4** and [Anthropic Claude](https://www.anthropic.com/)
-
-### Blockchain & Data
-- **[@solana/web3.js](https://solana.com)** - Solana blockchain RPC client
-- **[DexScreener API](https://dexscreener.com)** - Real-time DEX trading data aggregation
-- **[Bitquery API](https://bitquery.io)** - On-chain data analytics (optional)
-
-### UI & Styling
-- **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first CSS with design tokens
-- **[shadcn/ui](https://ui.shadcn.com)** - High-quality React components (Radix UI primitives)
-- **[Recharts](https://recharts.org)** - Composable charting library for data visualization
-- **[Lucide Icons](https://lucide.dev)** - Beautiful, consistent icon set
-
-### State & Data Fetching
-- **[SWR](https://swr.vercel.app)** - React Hooks for data fetching with caching and revalidation
-- **React Server Components** - Zero-JS server-rendered components
-
-## Getting Started
-
-### Installation
-
-```bash```
-
-# Clone the repository
-```git clone https://github.com/Ward-AI-Organization/ward-ai-foundation.git```
-
-```cd ward-ai-foundation```
-
-### Environment Variables
-
-Create environment variables in your local or cloud server:
-
-```
-# Optional: Bitquery API for enhanced analytics
-BITQUERY_API_KEY=your_bitquery_key
-
-# Optional: Apify or X API for social scraping 
-APIFY_API_TOKEN=your_apify_token
-```
-
-### Run Development Server
-
-```npm i```
-
-```npm run dev```
-# or
-
-```bun dev```
-
-Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## Features
 
@@ -106,16 +57,84 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 - **Trading Activity Review** - Flags suspicious buy/sell ratios and volume manipulation
 - **Volatility Assessment** - Identifies extreme price swings indicating manipulation
 - **Risk Classification** - Low/Medium/High risk levels with actionable insights
-- 
+
+### 💹 Advanced Trading Terminal
+- **Professional Interface** - TradingView-style interface with multiple timeframes
+- **Technical Indicators** - RSI, MACD, Bollinger Bands, and custom indicators
+- **Quick Analysis** - One-click token analysis from any trading view
+- **Multi-Chart Support** - Compare multiple tokens simultaneously
+
+## Tech Stack
+
+### Core Framework
+- **[Next.js 16](https://nextjs.org)** - React framework with App Router and Server Components
+- **[React 19.2](https://react.dev)** - Latest React with Canary features (useEffectEvent, Activity)
+- **[TypeScript 5](https://typescriptlang.org)** - Type-safe development
+- **[Vercel AI SDK v5](https://sdk.vercel.ai)** - AI-powered analysis with GPT-4 and Anthropic Claude
+
+### Blockchain & Data
+- **[@solana/web3.js](https://solana.com)** - Solana blockchain RPC client
+- **[DexScreener API](https://dexscreener.com)** - Real-time DEX trading data aggregation
+- **[Bitquery API](https://bitquery.io)** - On-chain data analytics (optional)
+
+### UI & Styling
+- **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first CSS with design tokens
+- **[shadcn/ui](https://ui.shadcn.com)** - High-quality React components (Radix UI primitives)
+- **[Recharts](https://recharts.org)** - Composable charting library for data visualization
+- **[Lucide Icons](https://lucide.dev)** - Beautiful, consistent icon set
+
+### State & Data Fetching
+- **[SWR](https://swr.vercel.app)** - React Hooks for data fetching with caching and revalidation
+- **React Server Components** - Zero-JS server-rendered components
+
+## Getting Started
+
+### Installation
+
+\`\`\`bash
+# Clone the repository
+git clone https://github.com/your-org/ward-ai-foundation.git
+cd ward-ai-foundation
+
+# Install dependencies (automatically handled by Next.js)
+# No package.json setup required in development
+\`\`\`
+
+### Environment Variables
+
+Create environment variables in your Vercel project:
+
+\`\`\`bash
+# Optional: Bitquery API for enhanced analytics
+BITQUERY_API_KEY=your_bitquery_key
+
+# Optional: Apify for social scraping (currently disabled)
+APIFY_API_TOKEN=your_apify_token
+\`\`\`
+
+### Run Development Server
+
+\`\`\`bash
+# The project runs in Next.js runtime
+# Simply start the development server
+npm run dev
+# or
+bun dev
+# or
+yarn dev
+\`\`\`
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
 ## Usage
 
 ### 1. Analyze a Token
 
 Navigate to the **Analyze** page and enter any Solana token contract address:
 
-```
+\`\`\`
 Example: 7Y2TPeq3hqw21LRTCi4wBWoivDngCpNNJsN1hzhZpump
-```
+\`\`\`
 
 The system will:
 - Fetch real-time trading data from DexScreener
@@ -169,7 +188,7 @@ Performs comprehensive AI-powered token analysis.
 - `address` (string) - Solana token contract address
 
 **Response:**
-```typescript
+\`\`\`typescript
 {
   riskScore: number;        // 0-100 (higher = more risky)
   riskLevel: string;        // "low" | "medium" | "high" | "critical"
@@ -188,7 +207,7 @@ Performs comprehensive AI-powered token analysis.
     age: number;
   };
 }
-```
+\`\`\`
 
 ### `/api/wallet-holdings`
 
@@ -198,7 +217,7 @@ Fetches real-time portfolio holdings for a Solana wallet.
 - `address` (string) - Solana wallet address
 
 **Response:**
-```typescript
+\`\`\`typescript
 {
   holdings: Array<{
     mint: string;
@@ -213,7 +232,7 @@ Fetches real-time portfolio holdings for a Solana wallet.
   totalValue: number;
   averageRisk: number;
 }
-```
+\`\`\`
 
 ### `/api/ml-risk-analysis`
 
@@ -223,7 +242,7 @@ Generates ML-based risk analysis with sentiment tracking.
 - `address` (string) - Token contract address
 
 **Response:**
-```typescript
+\`\`\`typescript
 {
   overallRisk: number;
   sentiment: {
@@ -243,7 +262,7 @@ Generates ML-based risk analysis with sentiment tracking.
     balance: number;
   }>;
 }
-```
+\`\`\`
 
 ### `/api/contract-audit`
 
@@ -253,7 +272,7 @@ Performs automated smart contract security audit.
 - `address` (string) - Token contract address
 
 **Response:**
-```typescript
+\`\`\`typescript
 {
   overallRisk: number;
   findings: Array<{
@@ -270,7 +289,7 @@ Performs automated smart contract security audit.
     honeypotRisk: boolean;
   };
 }
-```
+\`\`\`
 
 ### `/api/live-alerts`
 
@@ -291,7 +310,7 @@ Streams real-time trading alerts for monitored tokens.
     data: object;
   }>;
 }
-```
+\`\`\`
 
 ### `/api/social-sentiment`
 
@@ -317,11 +336,11 @@ Analyzes social sentiment using on-chain trading patterns.
     timestamp: string;
   }>;
 }
-```
+\`\`\`
 
 ## Project Structure
 
-```
+\`\`\`
 ward-ai-foundation/
 ├── app/
 │   ├── analytics/          # Portfolio protection, ML risk analysis
@@ -345,7 +364,7 @@ ward-ai-foundation/
 ├── lib/
 │   └── utils.ts            # Utility functions
 └── public/                 # Static assets
-```
+\`\`\`
 
 ## Key Features Explained
 
@@ -380,6 +399,48 @@ WARD handles Solana RPC failures gracefully:
 4. Shows stale data with warning during outages
 5. Auto-retries in background without user intervention
 
+## Development
+
+### Adding New Features
+
+1. Create new component in `components/`
+2. Add API route in `app/api/[feature]/route.ts`
+3. Implement data fetching with SWR for caching
+4. Add to navigation and routing structure
+
+### Testing
+
+\`\`\`bash
+# Run the development server
+npm run dev
+
+# Open http://localhost:3000
+# Test with known token addresses
+\`\`\`
+
+### Deployment
+
+The project is designed for deployment on Vercel:
+
+\`\`\`bash
+# Deploy to Vercel
+vercel
+
+# Or connect your GitHub repo to Vercel for auto-deployments
+\`\`\`
+
+## Future Roadmap
+
+- [ ] Multi-chain support (Ethereum, BSC, Base, Arbitrum)
+- [ ] Historical risk tracking and pattern detection
+- [ ] Custom alert rules and webhook integrations
+- [ ] Telegram/Discord bot for real-time notifications
+- [ ] Portfolio simulation and backtesting
+- [ ] Advanced charting with custom indicators
+- [ ] Token comparison and ranking system
+- [ ] API key system for external developers
+- [ ] Mobile app (React Native)
+
 ## Contributing
 
 Contributions are welcome! Please follow these guidelines:
@@ -394,14 +455,25 @@ Contributions are welcome! Please follow these guidelines:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Acknowledgments
+
+- **Vercel** - For Next.js, AI SDK, and hosting platform
+- **DexScreener** - For comprehensive DEX trading data
+- **Solana** - For fast, low-cost blockchain infrastructure
+- **shadcn** - For beautiful, accessible UI components
+
 ## Contact
 
 - **X (Twitter)**: [@wardaicrypto](https://x.com/wardaicrypto)
-- **GitHub**: [ward-ai-foundation](https://github.com/Ward-AI-Organization/ward-ai-foundation)
-- **Website**: [ward-ai.com](https://www.ward-ai.com/)
+- **GitHub**: [ward-ai-foundation](https://github.com/your-org/ward-ai-foundation)
+- **Website**: [wardai.io](https://wardai.io)
 
 ---
 
 <p align="center">
-  Built with ❤️ by the WARD team 
+  Built with ❤️ by the WARD team using v0 by Vercel
+</p>
+
+<p align="center">
+  <strong>Protect your investments. Trade with confidence.</strong>
 </p>
