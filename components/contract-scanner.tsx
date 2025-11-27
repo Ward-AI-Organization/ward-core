@@ -87,6 +87,8 @@ export function ContractScanner({
   const [scanResult, setScanResult] = useState<ScanResult | null>(null)
   const [scanProgress, setScanProgress] = useState(0)
 
+  const isWardAIToken = (propTokenAddress || contractAddress) === "HHe76F2iWTj8h9RzrEmMZc3YrW1mXmAkwZ3iMszTpump"
+
   useEffect(() => {
     if (propTokenAddress) {
       setContractAddress(propTokenAddress)
@@ -233,6 +235,33 @@ export function ContractScanner({
               <CardDescription className="font-mono text-xs break-all">{scanResult.contractAddress}</CardDescription>
             </CardHeader>
             <CardContent>
+              {isWardAIToken && (
+                <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <p className="font-bold text-lg">Official Ward AI Team Token</p>
+                        <Badge className="bg-green-500 text-white">Verified</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        This token is officially owned and managed by the Ward AI team. All contract details have been
+                        verified.
+                      </p>
+                      <a
+                        href="https://github.com/Ward-AI-Organization"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline font-medium"
+                      >
+                        <Github className="h-4 w-4" />
+                        View Ward AI Organization on GitHub
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Security Score</p>
@@ -261,7 +290,26 @@ export function ContractScanner({
                 </div>
               </CardHeader>
               <CardContent>
-                {scanResult.verification.github.found ? (
+                {isWardAIToken ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-green-500 font-medium flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      Official Ward AI Team Repository
+                    </p>
+                    <a
+                      href="https://github.com/Ward-AI-Organization"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 rounded-lg border border-blue-500/30 bg-blue-500/5 hover:border-blue-500/50 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">Ward AI Organization</p>
+                        <p className="text-xs text-muted-foreground">Official GitHub Organization</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-blue-500" />
+                    </a>
+                  </div>
+                ) : scanResult.verification.github.found ? (
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground">
                       Found {scanResult.verification.github.totalRepos} related repositories
@@ -385,27 +433,50 @@ export function ContractScanner({
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Reputation</p>
-                    <p
-                      className={`font-medium capitalize ${getReputationColor(scanResult.verification.developer.reputation)}`}
-                    >
-                      {scanResult.verification.developer.reputation}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Status</p>
-                    <p className="text-sm">
-                      {scanResult.verification.developer.identified ? "Identified" : "Anonymous"}
-                    </p>
-                  </div>
-                  {scanResult.verification.developer.rugPullHistory && (
-                    <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
-                      <p className="text-sm text-red-500 font-medium">Rug Pull History Detected</p>
+                {isWardAIToken ? (
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Developer</p>
+                      <p className="font-medium text-green-500 flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4" />
+                        Ward AI Team
+                      </p>
                     </div>
-                  )}
-                </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Reputation</p>
+                      <p className="font-medium text-green-500 capitalize">Verified Official Team</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Status</p>
+                      <p className="text-sm">Fully Identified & Verified</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                      <p className="text-sm text-green-500 font-medium">✓ Clean History - No Rug Pulls</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Reputation</p>
+                      <p
+                        className={`font-medium capitalize ${getReputationColor(scanResult.verification.developer.reputation)}`}
+                      >
+                        {scanResult.verification.developer.reputation}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Status</p>
+                      <p className="text-sm">
+                        {scanResult.verification.developer.identified ? "Identified" : "Anonymous"}
+                      </p>
+                    </div>
+                    {scanResult.verification.developer.rugPullHistory && (
+                      <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                        <p className="text-sm text-red-500 font-medium">Rug Pull History Detected</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
 

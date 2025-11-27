@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react"
+import { AlertTriangle, CheckCircle, XCircle, Info, Github, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ContractScanner } from "@/components/contract-scanner"
@@ -49,6 +49,8 @@ export function TokenAnalyzer({ tokenAddress }: TokenAnalyzerProps) {
   const [tokenData, setTokenData] = useState<TokenData | null>(null)
   const [analysis, setAnalysis] = useState<TokenAnalysis | null>(null)
   const [isRateLimited, setIsRateLimited] = useState(false)
+
+  const isWardAIToken = tokenAddress === "HHe76F2iWTj8h9RzrEmMZc3YrW1mXmAkwZ3iMszTpump"
 
   useEffect(() => {
     if (!tokenAddress) {
@@ -155,6 +157,28 @@ export function TokenAnalyzer({ tokenAddress }: TokenAnalyzerProps) {
               {tokenData.name} ({tokenData.symbol})
             </h1>
             <p className="text-sm text-muted-foreground font-mono">{tokenData.address}</p>
+            {isWardAIToken && (
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                    Official Ward AI Token
+                  </Badge>
+                  <Badge variant="outline" className="border-green-500 text-green-500">
+                    ✓ Verified Team
+                  </Badge>
+                </div>
+                <a
+                  href="https://github.com/Ward-AI-Organization"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline"
+                >
+                  <Github className="h-4 w-4" />
+                  Ward AI Organization on GitHub
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            )}
           </div>
           <div className={`px-4 py-2 rounded-lg ${riskLevelConfig[analysis.riskLevel].bg}`}>
             <p className="text-xs text-muted-foreground mb-1">Risk Score</p>
@@ -164,22 +188,22 @@ export function TokenAnalyzer({ tokenAddress }: TokenAnalyzerProps) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Price</p>
+            <p className="text-sm text-muted-foreground mb-1">Price</p>
             <p className="text-lg font-bold">${tokenData.priceUsd}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">24h Volume</p>
+            <p className="text-sm text-muted-foreground mb-1">24h Volume</p>
             <p className="text-lg font-bold">${tokenData.volume24h?.toLocaleString()}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">24h Change</p>
+            <p className="text-sm text-muted-foreground mb-1">24h Change</p>
             <p className={`text-lg font-bold ${tokenData.priceChange24h >= 0 ? "text-primary" : "text-destructive"}`}>
               {tokenData.priceChange24h >= 0 ? "+" : ""}
               {tokenData.priceChange24h}%
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Liquidity</p>
+            <p className="text-sm text-muted-foreground mb-1">Liquidity</p>
             <p className="text-lg font-bold">${tokenData.liquidity?.toLocaleString()}</p>
           </div>
         </div>

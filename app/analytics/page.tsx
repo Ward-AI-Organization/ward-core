@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { MarketGuardHeader } from "@/components/market-guard-header"
 import { Footer } from "@/components/footer"
-import { Shield, ScanSearch, TrendingUp, Brain } from "lucide-react"
+import { Shield, ScanSearch, TrendingUp, Brain, AlertTriangle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ContractScanner } from "@/components/contract-scanner"
 import { SentimentTracker } from "@/components/sentiment-tracker"
@@ -32,6 +32,24 @@ export default function AnalyticsPage() {
             Next-generation trading intelligence powered by artificial intelligence and machine learning
           </p>
         </div>
+
+        {activeTab === "portfolio" && (
+          <div className="max-w-4xl mx-auto mb-8 border border-yellow-500/30 rounded-xl p-6 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-sm">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-yellow-500/20 border border-yellow-500/30">
+                <AlertTriangle className="h-5 w-5 text-yellow-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-yellow-400 mb-2">Portfolio Protection - Under Maintenance</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  We are currently experiencing connectivity issues with Solana RPC endpoints. The Portfolio Protection
+                  feature may display mock data or limited information during this maintenance period. We're working to
+                  restore full real-time functionality as quickly as possible.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-8">
