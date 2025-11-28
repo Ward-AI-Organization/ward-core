@@ -86,6 +86,11 @@ async function searchGitHubRepos(
     if (manuallyVerified) {
       console.log("[v0] Found manually verified token:", manuallyVerified.name)
 
+      if (!manuallyVerified.githubUrl) {
+        console.log("[v0] No GitHub URL for manually verified token, skipping GitHub check")
+        return { found: false, repos: [], totalRepos: 0 }
+      }
+
       const githubUrl = manuallyVerified.githubUrl
       const urlParts = githubUrl.split("github.com/")
       const repoPath = urlParts[1]?.split("/").filter(Boolean)

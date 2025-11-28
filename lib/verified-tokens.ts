@@ -5,9 +5,10 @@ export interface ManuallyVerifiedToken {
   address: string
   name: string
   symbol: string
-  githubUrl: string
+  githubUrl?: string // Made optional since memecoins don't need GitHub
   verifiedDate: string
   notes?: string
+  category?: string
 }
 
 export const MANUALLY_VERIFIED_TOKENS: ManuallyVerifiedToken[] = [
@@ -18,6 +19,7 @@ export const MANUALLY_VERIFIED_TOKENS: ManuallyVerifiedToken[] = [
     githubUrl: "https://github.com/ward-ai/ward-ai-core",
     verifiedDate: "2024-01-15",
     notes: "Official Ward AI security platform token",
+    category: "Utility",
   },
   {
     address: "9ezFthWrDUpSSeMdpLW6SDD9TJigHdc4AuQ5QN5bpump",
@@ -25,7 +27,16 @@ export const MANUALLY_VERIFIED_TOKENS: ManuallyVerifiedToken[] = [
     symbol: "XERIS",
     githubUrl: "https://github.com/ZZachWWins/xeriscoin_testnet_localalpha_v1",
     verifiedDate: "2024-01-20",
-    notes: "Manually verified by Ward AI team",
+    notes: "Manually verified by the Ward AI team",
+    category: "DeFi",
+  },
+  {
+    address: "8J69rbLTzWWgUJziFY8jeu5tDwEPBwUz4pKBMr5rpump",
+    name: "Memecoin",
+    symbol: "MEME",
+    verifiedDate: "2024-01-20",
+    notes: "Verified memecoin project",
+    category: "Memecoin",
   },
 ]
 

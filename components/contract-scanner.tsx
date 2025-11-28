@@ -303,16 +303,18 @@ export function ContractScanner({
                         {scanResult.manualVerificationInfo.notes ||
                           "This token has been manually verified by the Ward AI team."}
                       </p>
-                      <a
-                        href={scanResult.manualVerificationInfo.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline font-medium"
-                      >
-                        <Github className="h-4 w-4" />
-                        View GitHub Repository
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
+                      {scanResult.manualVerificationInfo.githubUrl && (
+                        <a
+                          href={scanResult.manualVerificationInfo.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline font-medium"
+                        >
+                          <Github className="h-4 w-4" />
+                          View GitHub Repository
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
