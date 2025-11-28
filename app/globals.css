@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Added Solana wallet adapter styles for wallet connect UI */
+@import "@solana/wallet-adapter-react-ui/styles.css";
 
 @custom-variant dark (&:is(.dark *));
 
