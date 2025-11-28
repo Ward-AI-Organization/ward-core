@@ -107,14 +107,19 @@ interface ScanResult {
   vulnerabilities: VulnerabilityCheck[]
   verification: VerificationData
   scanTime: Date
+  tokenImages?: {
+    logo: string | null
+    banner: string | null
+  }
   manuallyVerified?: boolean
   manualVerificationInfo?: {
     address: string
     name: string
     symbol: string
-    githubUrl: string
+    githubUrl?: string
     verifiedDate: string
     notes?: string
+    category?: string
   }
 }
 
@@ -174,6 +179,7 @@ export function ContractScanner({
         scanTime: new Date(data.scanTime),
         manuallyVerified: data.manuallyVerified,
         manualVerificationInfo: data.manualVerificationInfo,
+        tokenImages: data.tokenImages,
       })
     } catch (error) {
       console.error("[v0] Scan error:", error)
@@ -284,84 +290,43 @@ export function ContractScanner({
             </p>
           </div>
 
-          <Card>
+          {scanResult.tokenImages?.banner && (
+            <div className="relative w-full aspect-[3/1] rounded-lg overflow-hidden bg-muted">
+              <img
+                src={scanResult.tokenImages.banner || "/placeholder.svg"}
+                alt="Token Banner"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          <Card className="border-border/50">
             <CardHeader>
-              <CardTitle className="text-lg">Audit Results</CardTitle>
-              <CardDescription className="font-mono text-xs break-all">{scanResult.contractAddress}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {scanResult.manuallyVerified && scanResult.manualVerificationInfo && (
-                <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="font-bold text-lg">Manually Verified Token</p>
-                        <Badge className="bg-green-500 text-white">Verified by Ward AI</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {scanResult.manualVerificationInfo.notes ||
-                          "This token has been manually verified by the Ward AI team."}
-                      </p>
-                      {scanResult.manualVerificationInfo.githubUrl && (
-                        <a
-                          href={scanResult.manualVerificationInfo.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline font-medium"
-                        >
-                          <Github className="h-4 w-4" />
-                          View GitHub Repository
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
+              <div className="flex items-start gap-4">
+                {scanResult.tokenImages?.logo && (
+                  <img
+                    src={scanResult.tokenImages.logo || "/placeholder.svg"}
+                    alt="Token Logo"
+                    className="w-16 h-16 rounded-full"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none"
+                    }}
+                  />
+                )}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-2xl">{isWardAIToken ? "Ward AI (WARD)" : "Token Analysis"}</CardTitle>
+                      <CardDescription className="mt-1 font-mono text-xs">{scanResult.contractAddress}</CardDescription>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-muted-foreground">Risk Score</div>
+                      <div className="text-4xl font-bold">{scanResult.overallScore}</div>
                     </div>
                   </div>
-                </div>
-              )}
-              {isWardAIToken && !scanResult.manuallyVerified && (
-                <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="font-bold text-lg">Official Ward AI Team Token</p>
-                        <Badge className="bg-green-500 text-white">Verified</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        This token is officially owned and managed by the Ward AI team. All contract details have been
-                        verified.
-                      </p>
-                      <a
-                        href="https://github.com/Ward-AI-Organization"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-blue-500 hover:underline font-medium"
-                      >
-                        <Github className="h-4 w-4" />
-                        View Ward AI Organization on GitHub
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Security Score</p>
-                  <div className="flex items-center gap-3">
-                    <p className={`text-4xl font-bold ${getScoreColor(scanResult.overallScore)}`}>
-                      {scanResult.overallScore}/100
-                    </p>
-                    {getScoreBadge(scanResult.overallScore)}
-                  </div>
-                </div>
-                <div className="text-right text-sm text-muted-foreground">
-                  <p>Scanned at</p>
-                  <p>{scanResult.scanTime.toLocaleTimeString()}</p>
                 </div>
               </div>
-            </CardContent>
+            </CardHeader>
           </Card>
 
           <div className="grid grid-cols-1 gap-6">

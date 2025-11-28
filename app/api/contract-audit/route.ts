@@ -623,6 +623,8 @@ export async function GET(request: NextRequest) {
     const passCount = vulnerabilities.filter((v) => v.status === "pass").length
     const overallScore = Math.round((passCount / vulnerabilities.length) * 100)
 
+    const volume24h = Number.parseFloat(pair.volume?.h24 || "0")
+
     return NextResponse.json({
       contractAddress: tokenAddress,
       overallScore,
@@ -630,14 +632,18 @@ export async function GET(request: NextRequest) {
       verification,
       scanTime: new Date().toISOString(),
       tokenInfo: {
-        name: pair.baseToken?.name,
-        symbol: pair.baseToken?.symbol,
+        name: pair.baseToken?.name || "Unknown",
+        symbol: pair.baseToken?.symbol || "???",
         liquidity,
         fdv,
-        volume24h: Number.parseFloat(pair.volume?.h24 || "0"),
+        volume24h,
       },
-      manuallyVerified: manualVerification ? true : false, // Add manually verified flag
-      manualVerificationInfo: manualVerification, // Add verification details
+      tokenImages: {
+        logo: pair.info?.imageUrl || null,
+        banner: pair.info?.header || null,
+      },
+      manuallyVerified: manualVerification ? true : false,
+      manualVerificationInfo: manualVerification,
     })
   } catch (error) {
     console.error("[v0] Contract audit error:", error)
