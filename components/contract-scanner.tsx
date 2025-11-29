@@ -72,6 +72,8 @@ interface VerificationData {
     reputation: "unknown" | "known" | "verified" | "suspicious"
     previousProjects: number
     rugPullHistory: boolean
+    creationPlatform?: string
+    creatorAddress?: string
   }
   plagiarism: {
     detected: boolean
@@ -519,6 +521,27 @@ export function ContractScanner({
                         {scanResult.verification.developer.identified ? "Identified" : "Anonymous"}
                       </p>
                     </div>
+                    {scanResult.verification.developer.creationPlatform && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Created On</p>
+                        <p className="text-sm font-medium">{scanResult.verification.developer.creationPlatform}</p>
+                      </div>
+                    )}
+                    {scanResult.verification.developer.creatorAddress && (
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Creator Address</p>
+                        <a
+                          href={`https://solscan.io/account/${scanResult.verification.developer.creatorAddress}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-mono text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-1"
+                        >
+                          {scanResult.verification.developer.creatorAddress.slice(0, 4)}...
+                          {scanResult.verification.developer.creatorAddress.slice(-4)}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    )}
                     {scanResult.verification.developer.rugPullHistory && (
                       <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
                         <p className="text-sm text-red-500 font-medium">Rug Pull History Detected</p>

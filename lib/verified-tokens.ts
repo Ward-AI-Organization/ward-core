@@ -38,6 +38,14 @@ export const MANUALLY_VERIFIED_TOKENS: ManuallyVerifiedToken[] = [
     notes: "Verified memecoin project",
     category: "Memecoin",
   },
+  {
+    address: "C2omVhcvt3DDY77S2KZzawFJQeETZofgZ4eNWWkXpump",
+    name: "Memecoin",
+    symbol: "MEME",
+    verifiedDate: "2024-01-20",
+    notes: "Verified memecoin project",
+    category: "Memecoin",
+  },
 ]
 
 export function getManuallyVerifiedToken(address: string): ManuallyVerifiedToken | undefined {
