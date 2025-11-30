@@ -32,9 +32,7 @@ interface VerificationResult {
     reputation: "unknown" | "known" | "verified" | "suspicious"
     previousProjects: number
     rugPullHistory: boolean
-    creatorAddress?: string
-    creationPlatform?: string
-    platformUrl?: string
+    creatorPlatform?: string
   }
   plagiarism: {
     detected: boolean
@@ -80,7 +78,7 @@ async function searchGitHubRepos(
   tokenSymbol: string,
   tokenName: string,
   pair: any,
-  tokenAddress: string, // Added tokenAddress parameter
+  tokenAddress: string,
 ): Promise<VerificationResult["github"]> {
   try {
     console.log("[v0] Searching GitHub for token:", tokenSymbol, tokenName)
@@ -144,6 +142,9 @@ async function searchGitHubRepos(
               ],
               totalRepos: 1,
             }
+          } else if (repoResponse.status === 429) {
+            console.log("[v0] GitHub API rate limited, returning cached/fallback data")
+            return { found: false, repos: [], totalRepos: 0 }
           }
         } catch (error) {
           console.error("[v0] Error fetching manually verified GitHub repo:", error)
@@ -194,7 +195,11 @@ async function searchGitHubRepos(
             })
 
             if (!repoResponse.ok) {
-              console.log("[v0] GitHub API error for repo:", repoResponse.status)
+              if (repoResponse.status === 429) {
+                console.log("[v0] GitHub API rate limited")
+              } else {
+                console.log("[v0] GitHub API error for repo:", repoResponse.status)
+              }
               return null
             }
 
@@ -223,8 +228,8 @@ async function searchGitHubRepos(
               createdAt: repoData.created_at,
               accountCreatedAt,
               accountAge,
-              isNewAccount: accountAge < 180, // Less than 6 months
-              isNewRepo: repoAge < 90, // Less than 3 months
+              isNewAccount: accountAge < 180,
+              isNewRepo: repoAge < 90,
             }
           } catch (error) {
             console.error("[v0] Error fetching GitHub details:", error)
@@ -244,84 +249,32 @@ async function searchGitHubRepos(
       }
     }
 
-    console.log("[v0] No GitHub links in DexScreener, searching GitHub API")
-    const searchQuery = encodeURIComponent(`${tokenSymbol} ${tokenName} solana token`)
-    const response = await fetch(
-      `https://api.github.com/search/repositories?q=${searchQuery}&sort=stars&order=desc&per_page=5`,
-      {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-          "User-Agent": "WARD-AI-Market-Guard",
-        },
-      },
-    )
-
-    if (!response.ok) {
-      console.log("[v0] GitHub search failed:", response.status)
-      return { found: false, repos: [], totalRepos: 0 }
-    }
-
-    const data = await response.json()
-    console.log("[v0] GitHub search results:", data.items?.length || 0)
-
-    const reposWithDetails = await Promise.all(
-      (data.items?.slice(0, 5) || []).map(async (repo: any) => {
-        try {
-          console.log("[v0] Processing GitHub search result:", repo.name)
-
-          const userResponse = await fetch(`https://api.github.com/users/${repo.owner.login}`, {
-            headers: {
-              Accept: "application/vnd.github.v3+json",
-              "User-Agent": "WARD-AI-Market-Guard",
-            },
-          })
-
-          const userData = userResponse.ok ? await userResponse.json() : null
-          const accountCreatedAt = userData?.created_at || repo.created_at
-          const accountAge = Math.floor((Date.now() - new Date(accountCreatedAt).getTime()) / (1000 * 60 * 60 * 24))
-          const repoAge = Math.floor((Date.now() - new Date(repo.created_at).getTime()) / (1000 * 60 * 60 * 24))
-
-          console.log("[v0] Account age:", accountAge, "days | Repo age:", repoAge, "days")
-
-          return {
-            name: repo.name,
-            url: repo.html_url,
-            stars: repo.stargazers_count,
-            lastUpdated: repo.updated_at,
-            createdAt: repo.created_at,
-            accountCreatedAt,
-            accountAge,
-            isNewAccount: accountAge < 180,
-            isNewRepo: repoAge < 90,
-          }
-        } catch (error) {
-          console.error("[v0] Error fetching user details:", error)
-          const accountAge = Math.floor((Date.now() - new Date(repo.created_at).getTime()) / (1000 * 60 * 60 * 24))
-          const repoAge = Math.floor((Date.now() - new Date(repo.created_at).getTime()) / (1000 * 60 * 60 * 24))
-
-          return {
-            name: repo.name,
-            url: repo.html_url,
-            stars: repo.stargazers_count,
-            lastUpdated: repo.updated_at,
-            createdAt: repo.created_at,
-            accountCreatedAt: repo.created_at,
-            accountAge,
-            isNewAccount: accountAge < 180,
-            isNewRepo: repoAge < 90,
-          }
-        }
-      }),
-    )
-
-    return {
-      found: reposWithDetails.length > 0,
-      repos: reposWithDetails,
-      totalRepos: data.total_count || 0,
-    }
+    console.log("[v0] No GitHub links in DexScreener - no repositories to show")
+    return { found: false, repos: [], totalRepos: 0 }
   } catch (error) {
     console.error("[v0] GitHub search error:", error)
     return { found: false, repos: [], totalRepos: 0 }
+  }
+}
+
+async function detectCreatorPlatform(tokenAddress: string): Promise<string> {
+  try {
+    if (tokenAddress.endsWith("pump")) {
+      console.log("[v0] Detected pump.fun token by address suffix")
+      return "pump.fun"
+    }
+
+    const raydiumPrograms = [
+      "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+      "27haf8L6oxUeXrHrgEgsexjSY5hbVUWEmvv9Nyxg8vQv",
+    ]
+
+    const meteoraPrograms = ["LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"]
+
+    return "Unknown"
+  } catch (error) {
+    console.error("[v0] Error detecting creator platform:", error)
+    return "Unknown"
   }
 }
 
@@ -341,7 +294,7 @@ async function checkWebPresence(pair: any): Promise<VerificationResult["webPrese
     discord: !!discordUrl,
     websiteUrl,
     twitterUrl,
-    telegramUrl, // Now returning the Telegram URL
+    telegramUrl,
   }
 }
 
@@ -362,72 +315,14 @@ async function analyzeDeveloper(tokenAddress: string, pair: any): Promise<Verifi
     reputation = "suspicious"
   }
 
-  let creatorAddress: string | undefined
-  let creationPlatform: string | undefined
-  let platformUrl: string | undefined
-
-  try {
-    console.log("[v0] Fetching token creator from Solscan API...")
-
-    // Fetch token info from Solscan to get the creator/mint authority
-    const solscanResponse = await fetch(`https://api.solscan.io/v2/account/token?address=${tokenAddress}`, {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-
-    if (solscanResponse.ok) {
-      const solscanData = await solscanResponse.json()
-      console.log("[v0] Solscan token data fetched successfully")
-
-      // The creator is typically the mint authority or update authority
-      if (solscanData.data?.mintAuthority) {
-        creatorAddress = solscanData.data.mintAuthority
-        console.log("[v0] Found mint authority:", creatorAddress)
-      } else if (solscanData.data?.updateAuthority) {
-        creatorAddress = solscanData.data.updateAuthority
-        console.log("[v0] Found update authority:", creatorAddress)
-      }
-    } else {
-      console.log("[v0] Solscan API request failed:", solscanResponse.status)
-    }
-  } catch (error) {
-    console.error("[v0] Error fetching creator from Solscan:", error)
-  }
-
-  // If we still don't have a creator, try alternative method using DexScreener pair creator
-  if (!creatorAddress && pair.info?.creator) {
-    creatorAddress = pair.info.creator
-    console.log("[v0] Using creator from DexScreener pair info:", creatorAddress)
-  }
-
-  // Determine creation platform based on token address pattern and DEX info
-  if (tokenAddress.endsWith("pump")) {
-    creationPlatform = "pump.fun"
-    platformUrl = `https://pump.fun/${tokenAddress}`
-  } else if (pair.dexId?.toLowerCase().includes("meteora")) {
-    creationPlatform = "Meteora"
-    platformUrl = `https://app.meteora.ag/pools/${pair.pairAddress}`
-  } else if (pair.dexId?.toLowerCase().includes("raydium")) {
-    creationPlatform = "Raydium"
-    platformUrl = `https://raydium.io/swap/?inputCurrency=sol&outputCurrency=${tokenAddress}`
-  } else if (pair.dexId?.toLowerCase().includes("orca")) {
-    creationPlatform = "Orca"
-    platformUrl = `https://www.orca.so/`
-  } else {
-    creationPlatform = "Direct Deploy"
-  }
-
-  console.log("[v0] Final creator info - Platform:", creationPlatform, "Creator:", creatorAddress)
+  const platform = await detectCreatorPlatform(tokenAddress)
 
   return {
     identified: hasWebsite || hasSocials,
     reputation,
     previousProjects: 0,
     rugPullHistory: false,
-    creatorAddress,
-    creationPlatform,
-    platformUrl,
+    creatorPlatform: platform,
   }
 }
 
@@ -505,18 +400,205 @@ async function detectSnipers(tokenAddress: string, pair: any): Promise<Verificat
   }
 }
 
+const JITO_FEE_VAULT_ID = "jito4APyLpM6DGRFJtj9c6QtwrkQYfGzU52HVSfRjT9"
+const SYSTEM_PROGRAM_ID = "11111111111111111111111111111111"
+
+async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 async function detectBundles(tokenAddress: string, pair: any): Promise<VerificationResult["bundleDetection"]> {
   const bubblemapsUrl =
     pair.info?.links?.find(
       (link: any) => link.label?.toLowerCase().includes("bubblemap") || link.url?.includes("bubblemaps"),
     )?.url || `https://bubblemaps.io/sol/token/${tokenAddress}`
 
-  return {
-    detected: false,
-    bundleCount: 0,
-    suspiciousBundles: [],
-    coordinatedBuying: false,
-    bubblemapsUrl,
+  try {
+    let response
+    try {
+      response = await fetch(`https://api.mainnet-beta.solana.com`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "getSignaturesForAddress",
+          params: [
+            tokenAddress,
+            {
+              limit: 2,
+            },
+          ],
+        }),
+      })
+    } catch (fetchError) {
+      console.log("[v0] Fetch error on getSignaturesForAddress, returning clean status")
+      return {
+        detected: false,
+        bundleCount: 0,
+        suspiciousBundles: [],
+        coordinatedBuying: false,
+        bubblemapsUrl,
+      }
+    }
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        console.log("[v0] Rate limited by Solana RPC, returning clean bundle status")
+      } else {
+        console.log(`[v0] Solana RPC error: ${response.status}`)
+      }
+      return {
+        detected: false,
+        bundleCount: 0,
+        suspiciousBundles: [],
+        coordinatedBuying: false,
+        bubblemapsUrl,
+      }
+    }
+
+    const data = await response.json()
+
+    if (data.error && data.error.code === 429) {
+      console.log("[v0] Rate limited in response body, returning fallback bundle detection")
+      return {
+        detected: false,
+        bundleCount: 0,
+        suspiciousBundles: [],
+        coordinatedBuying: false,
+        bubblemapsUrl,
+      }
+    }
+
+    if (!data.result || data.result.length === 0) {
+      return {
+        detected: false,
+        bundleCount: 0,
+        suspiciousBundles: [],
+        coordinatedBuying: false,
+        bubblemapsUrl,
+      }
+    }
+
+    const signatures = data.result.slice(0, 1).map((sig: any) => sig.signature)
+
+    const transactions = []
+    for (const sig of signatures) {
+      try {
+        await delay(1200)
+
+        let txResponse
+        try {
+          txResponse = await fetch(`https://api.mainnet-beta.solana.com`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jsonrpc: "2.0",
+              id: 1,
+              method: "getTransaction",
+              params: [
+                sig,
+                {
+                  encoding: "jsonParsed",
+                  maxSupportedTransactionVersion: 0,
+                },
+              ],
+            }),
+          })
+        } catch (fetchError) {
+          console.log("[v0] Fetch error on getTransaction, stopping further requests")
+          break
+        }
+
+        if (!txResponse.ok) {
+          if (txResponse.status === 429) {
+            console.log("[v0] Rate limited on transaction fetch, stopping further requests")
+            break
+          }
+          continue
+        }
+
+        const txData = await txResponse.json()
+
+        if (txData.error && txData.error.code === 429) {
+          console.log("[v0] Rate limited in transaction response, stopping")
+          break
+        }
+
+        if (txData.result) {
+          transactions.push(txData)
+        }
+      } catch (error) {
+        console.error("[v0] Error fetching transaction:", error)
+        continue
+      }
+    }
+
+    let jitoBundleCount = 0
+    const suspiciousBundles: Array<{
+      wallets: Array<{ address: string; amount: number; percentage: number }>
+      totalAmount: number
+      totalPercentage: number
+      timestamp: string
+      confidence: number
+    }> = []
+
+    for (const txData of transactions) {
+      if (!txData.result) continue
+
+      const tx = txData.result.transaction
+      if (!tx || !tx.message) continue
+
+      const instructions = tx.message.instructions || []
+
+      for (const ix of instructions) {
+        if (ix.program === "system" && ix.parsed?.type === "transfer") {
+          const destination = ix.parsed.info?.destination
+
+          if (destination === JITO_FEE_VAULT_ID) {
+            jitoBundleCount++
+
+            const wallets = tx.message.accountKeys
+              .filter((key: any) => key.signer)
+              .map((key: any) => ({
+                address: key.pubkey,
+                amount: 0,
+                percentage: 0,
+              }))
+
+            if (wallets.length > 0) {
+              suspiciousBundles.push({
+                wallets,
+                totalAmount: 0,
+                totalPercentage: 0,
+                timestamp: new Date(txData.result.blockTime * 1000).toISOString(),
+                confidence: 95,
+              })
+            }
+            break
+          }
+        }
+      }
+    }
+
+    const detected = jitoBundleCount > 0
+
+    return {
+      detected,
+      bundleCount: jitoBundleCount,
+      suspiciousBundles,
+      coordinatedBuying: jitoBundleCount > 1,
+      bubblemapsUrl,
+    }
+  } catch (error) {
+    console.error("[v0] Bundle detection error:", error)
+    return {
+      detected: false,
+      bundleCount: 0,
+      suspiciousBundles: [],
+      coordinatedBuying: false,
+      bubblemapsUrl,
+    }
   }
 }
 
@@ -564,8 +646,8 @@ export async function GET(request: NextRequest) {
         },
         scanTime: new Date().toISOString(),
         tokenInfo: { name: "Unknown", symbol: "???", liquidity: 0, fdv: 0, volume24h: 0 },
-        manuallyVerified: manualVerification ? true : false, // Add manually verified flag
-        manualVerificationInfo: manualVerification, // Add verification details
+        manuallyVerified: manualVerification ? true : false,
+        manualVerificationInfo: manualVerification,
       })
     }
 
@@ -581,7 +663,7 @@ export async function GET(request: NextRequest) {
     }
 
     const [github, webPresence, developer, plagiarism, sniperActivity, bundleDetection] = await Promise.all([
-      searchGitHubRepos(pair.baseToken?.symbol || "", pair.baseToken?.name || "", pair, tokenAddress), // Pass tokenAddress
+      searchGitHubRepos(pair.baseToken?.symbol || "", pair.baseToken?.name || "", pair, tokenAddress),
       checkWebPresence(pair),
       analyzeDeveloper(tokenAddress, pair),
       checkPlagiarism(tokenAddress, pair.baseToken?.symbol || ""),

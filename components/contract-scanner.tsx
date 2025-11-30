@@ -16,6 +16,9 @@ import {
   User,
   Copy,
   ExternalLink,
+  CheckCircle2,
+  Activity,
+  TrendingUp,
 } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 
@@ -72,9 +75,8 @@ interface VerificationData {
     reputation: "unknown" | "known" | "verified" | "suspicious"
     previousProjects: number
     rugPullHistory: boolean
-    creationPlatform?: string
-    platformUrl?: string
-    creatorAddress?: string
+    creatorPlatform?: string // Add platform
+    creatorAddress?: string // Add creator address
   }
   plagiarism: {
     detected: boolean
@@ -502,12 +504,36 @@ export function ContractScanner({
                       <p className="text-sm text-muted-foreground mb-1">Status</p>
                       <p className="text-sm">Fully Identified & Verified</p>
                     </div>
-                    <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                    <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
                       <p className="text-sm text-green-500 font-medium">✓ Clean History - No Rug Pulls</p>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-3">
+                    {scanResult.verification.developer.creatorPlatform &&
+                      scanResult.verification.developer.creatorPlatform !== "Unknown" && (
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">Created On</p>
+                          <a
+                            href={
+                              scanResult.verification.developer.creatorPlatform === "pump.fun"
+                                ? `https://pump.fun/coin/${contractAddress}`
+                                : scanResult.verification.developer.creatorPlatform === "Raydium"
+                                  ? "https://raydium.io/"
+                                  : scanResult.verification.developer.creatorPlatform === "Meteora"
+                                    ? "https://meteora.ag/"
+                                    : "#"
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-sm text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-2"
+                          >
+                            {scanResult.verification.developer.creatorPlatform}
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </div>
+                      )}
+
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Reputation</p>
                       <p
@@ -522,39 +548,6 @@ export function ContractScanner({
                         {scanResult.verification.developer.identified ? "Identified" : "Anonymous"}
                       </p>
                     </div>
-                    {scanResult.verification.developer.creationPlatform && (
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Created On</p>
-                        {scanResult.verification.developer.platformUrl ? (
-                          <a
-                            href={scanResult.verification.developer.platformUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm font-medium text-blue-500 hover:text-blue-400 flex items-center gap-1"
-                          >
-                            {scanResult.verification.developer.creationPlatform}
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        ) : (
-                          <p className="text-sm font-medium">{scanResult.verification.developer.creationPlatform}</p>
-                        )}
-                      </div>
-                    )}
-                    {scanResult.verification.developer.creatorAddress && (
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">Creator Address</p>
-                        <a
-                          href={`https://solscan.io/account/${scanResult.verification.developer.creatorAddress}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-mono text-blue-500 hover:text-blue-400 flex items-center gap-1"
-                        >
-                          {scanResult.verification.developer.creatorAddress.slice(0, 4)}...
-                          {scanResult.verification.developer.creatorAddress.slice(-4)}
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      </div>
-                    )}
                     {scanResult.verification.developer.rugPullHistory && (
                       <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
                         <p className="text-sm text-red-500 font-medium">Rug Pull History Detected</p>
@@ -666,20 +659,204 @@ export function ContractScanner({
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
+                  <Activity className="h-5 w-5" />
                   <CardTitle className="text-base">Bundle Detection</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                    <p className="text-sm text-yellow-500 font-medium">Ongoing Development</p>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div
+                      className={`p-3 rounded-lg border ${
+                        scanResult.verification.bundleDetection.detected
+                          ? "bg-red-500/10 border-red-500/30"
+                          : "bg-green-500/10 border-green-500/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        {scanResult.verification.bundleDetection.detected ? (
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                        ) : (
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        )}
+                        <p className="text-xs text-muted-foreground">Total Bundles</p>
+                      </div>
+                      <p
+                        className={`text-2xl font-bold ${
+                          scanResult.verification.bundleDetection.detected ? "text-red-500" : "text-green-500"
+                        }`}
+                      >
+                        {scanResult.verification.bundleDetection.bundleCount}
+                      </p>
+                    </div>
+                    <div
+                      className={`p-3 rounded-lg border ${
+                        scanResult.verification.bundleDetection.detected
+                          ? "bg-orange-500/10 border-orange-500/30"
+                          : "bg-green-500/10 border-green-500/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        {scanResult.verification.bundleDetection.detected ? (
+                          <TrendingUp className="h-4 w-4 text-orange-500" />
+                        ) : (
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        )}
+                        <p className="text-xs text-muted-foreground">Status</p>
+                      </div>
+                      <p
+                        className={`text-2xl font-bold ${
+                          scanResult.verification.bundleDetection.detected
+                            ? scanResult.verification.bundleDetection.coordinatedBuying
+                              ? "text-orange-500"
+                              : "text-yellow-500"
+                            : "text-green-500"
+                        }`}
+                      >
+                        {scanResult.verification.bundleDetection.detected
+                          ? scanResult.verification.bundleDetection.coordinatedBuying
+                            ? "High"
+                            : "Medium"
+                          : "Clean"}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Bundle detection feature is currently under development. Advanced wallet clustering analysis will be
-                    available soon.
-                  </p>
+
+                  {scanResult.verification.bundleDetection.detected &&
+                    scanResult.verification.bundleDetection.suspiciousBundles.length > 0 && (
+                      <div className="space-y-4">
+                        {/* Bundle Activity Visualization */}
+                        <div className="p-4 rounded-lg border border-border/50 bg-gradient-to-br from-red-500/5 to-orange-500/5">
+                          <p className="text-sm font-medium mb-3">Bundle Activity Distribution</p>
+                          <div className="space-y-2">
+                            {scanResult.verification.bundleDetection.suspiciousBundles.map((bundle, idx) => {
+                              const maxWallets = Math.max(
+                                ...scanResult.verification.bundleDetection.suspiciousBundles.map(
+                                  (b) => b.wallets.length,
+                                ),
+                              )
+                              const widthPercent = (bundle.wallets.length / maxWallets) * 100
+
+                              return (
+                                <div key={idx} className="space-y-1">
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-muted-foreground">Bundle {idx + 1}</span>
+                                    <span className="font-medium">{bundle.wallets.length} wallets</span>
+                                  </div>
+                                  <div className="h-8 rounded-md bg-muted/30 overflow-hidden relative">
+                                    <div
+                                      className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-md transition-all duration-500 flex items-center justify-end px-2"
+                                      style={{ width: `${widthPercent}%` }}
+                                    >
+                                      <span className="text-xs font-bold text-white">{bundle.confidence}%</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Timeline Visualization */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-medium">Bundle Timeline</p>
+                            <Badge variant="outline" className="text-xs">
+                              Last {scanResult.verification.bundleDetection.suspiciousBundles.length} transactions
+                            </Badge>
+                          </div>
+
+                          <div className="relative space-y-3">
+                            <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-red-500 via-orange-500 to-transparent" />
+
+                            {scanResult.verification.bundleDetection.suspiciousBundles.map((bundle, idx) => (
+                              <div key={idx} className="relative pl-10">
+                                <div className="absolute left-2.5 top-3 w-3 h-3 rounded-full bg-red-500 ring-4 ring-red-500/20 animate-pulse" />
+                                <div className="p-4 rounded-lg border border-border/50 bg-card/50 hover:border-red-500/30 transition-colors">
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className="flex-1">
+                                      <p className="text-xs text-muted-foreground mb-1">
+                                        {new Date(bundle.timestamp).toLocaleString()}
+                                      </p>
+                                      <div className="flex items-center gap-2">
+                                        <Badge className="text-xs bg-red-500/10 text-red-500 border-red-500/30">
+                                          Jito Bundle
+                                        </Badge>
+                                        <Badge variant="outline" className="text-xs">
+                                          {bundle.confidence}% confidence
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                      <User className="h-3 w-3" />
+                                      <span>
+                                        {bundle.wallets.length} wallet{bundle.wallets.length !== 1 ? "s" : ""}{" "}
+                                        participating
+                                      </span>
+                                    </div>
+
+                                    {/* Wallet Participation Visual */}
+                                    <div className="flex items-center gap-1 flex-wrap">
+                                      {bundle.wallets.slice(0, 15).map((wallet, walletIdx) => (
+                                        <div
+                                          key={walletIdx}
+                                          className="h-2 w-2 rounded-full bg-red-500 hover:scale-150 transition-transform cursor-pointer"
+                                          title={`${wallet.address.slice(0, 8)}...${wallet.address.slice(-8)}`}
+                                        />
+                                      ))}
+                                      {bundle.wallets.length > 15 && (
+                                        <span className="text-xs text-muted-foreground ml-1">
+                                          +{bundle.wallets.length - 15} more
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Show sample wallet addresses */}
+                                    {bundle.wallets.slice(0, 3).map((wallet, walletIdx) => (
+                                      <a
+                                        key={walletIdx}
+                                        href={`https://solscan.io/account/${wallet.address}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-2 p-2 rounded bg-muted/50 hover:bg-muted transition-colors text-xs font-mono group"
+                                      >
+                                        <span className="truncate flex-1">{wallet.address}</span>
+                                        <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
+                                      </a>
+                                    ))}
+
+                                    {bundle.wallets.length > 3 && (
+                                      <p className="text-xs text-muted-foreground text-center">
+                                        +{bundle.wallets.length - 3} more wallets
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {scanResult.verification.bundleDetection.coordinatedBuying && (
+                            <div className="flex items-start gap-3 p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
+                              <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                              <div>
+                                <p className="text-sm text-orange-500 font-medium mb-1">
+                                  Coordinated Buying Pattern Detected
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Multiple Jito bundles suggest organized wallet activity. This may indicate market
+                                  manipulation or coordinated buying behavior.
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                   {scanResult.verification.bundleDetection.bubblemapsUrl && (
                     <a
                       href={scanResult.verification.bundleDetection.bubblemapsUrl}
