@@ -324,10 +324,6 @@ export function ContractScanner({
                       <CardTitle className="text-2xl">{isWardAIToken ? "Ward AI (WARD)" : "Token Analysis"}</CardTitle>
                       <CardDescription className="mt-1 font-mono text-xs">{scanResult.contractAddress}</CardDescription>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">Risk Score</div>
-                      <div className="text-4xl font-bold">{scanResult.overallScore}</div>
-                    </div>
                   </div>
                 </div>
               </div>
